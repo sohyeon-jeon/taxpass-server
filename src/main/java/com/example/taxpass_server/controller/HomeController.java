@@ -8,6 +8,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String hello() {
-        return "✅ Taxpass Server is up and running!";
+        return "hello..";
     }
 }

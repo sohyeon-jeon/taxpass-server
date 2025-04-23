@@ -10,4 +10,5 @@ public class TaxpassServerApplication {
 		SpringApplication.run(TaxpassServerApplication.class, args);
 	}
 
+
 }
