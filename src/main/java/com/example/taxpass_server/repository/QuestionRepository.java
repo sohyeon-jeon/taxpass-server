@@ -14,7 +14,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
                                                     q."number",
                                                     q.exam_year,
                                                     q.exam_name,
-                                                    q.question_text,
                                                     q.description,
                                                    json_agg(
                                                       json_build_object(
@@ -44,7 +43,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
                                                     q."number",
                                                     q.exam_year,
                                                     q.exam_name,
-                                                    q.question_text,
                                                     q.description,
                                                     a.correct_answer,
                                                     a.explanation
