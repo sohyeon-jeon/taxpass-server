@@ -3,6 +3,8 @@ package com.example.taxpass_server.repository;
 import com.example.taxpass_server.entity.Question;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
@@ -44,6 +46,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     FROM questions q
     JOIN choices c ON q.id = c.question_id
     JOIN answers a ON q.id = a.question_id
+    WHERE q.problem_group_id = :subjectId
     GROUP BY
       q.id,
       q.problem_group_id,
@@ -56,5 +59,5 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     ORDER BY q.id
     """, nativeQuery = true)
 
-    List<Object[]> findQuestionBundle();
+    List<Object[]> findQuestionBundleBySubjectId(@Param("subjectId") Long subjectId);
 }
