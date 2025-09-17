@@ -34,17 +34,24 @@ public class AuthService {
 
     public LoginResponse login(KakaoLoginRequest request) {
         String kakaoAccessToken;
+
+//        카카오 accessToken 발급
         if ("web".equalsIgnoreCase(request.getPlatform())) {
             kakaoAccessToken = getAccessTokenFromKakao(request.getCode());
         } else {
             kakaoAccessToken = request.getAccessToken();
         }
 
+//        발급받은 accessToken으로 사용자 정보 조회
         KakaoUserInfoResponse userInfo = getUserInfoFromKakao(kakaoAccessToken);
 
+
+//        해당 카카오 id가 taxPass앱에 가입된 사용자인지 확인
+//        가입되지 않는 신규 사용자일 경우, 카카오 정보 데이터베이스에 저장
         User user = userRepository.findByKakaoId(userInfo.getId())
                 .orElseGet(() -> saveNewUser(userInfo));
 
+//        위 과정이 모두 성공하면, jwt 발급
         String serviceToken = jwtUtil.generateToken(user.getId());
 
         return LoginResponse.builder()
@@ -74,10 +81,13 @@ public class AuthService {
     }
 
     private User saveNewUser(KakaoUserInfoResponse userInfo) {
+//        System.out.println("userInfo.getNickname() = " + userInfo.getNickname());
+//        System.out.println("userInfo.getProfileImageUrl() = " + userInfo.getProfileImageUrl());
         User user = User.builder()
                 .kakaoId(userInfo.getId())
                 .nickname(userInfo.getNickname())
                 .email(userInfo.getEmail())
+                .profileImageUrl(userInfo.getProfileImageUrl())
                 .build();
         return userRepository.save(user);
     }

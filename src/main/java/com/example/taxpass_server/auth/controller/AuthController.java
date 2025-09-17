@@ -20,6 +20,7 @@ public class AuthController {
     @PostMapping("/kakao/login")
     public ResponseEntity<LoginResponse> kakaoLogin(@RequestBody KakaoLoginRequest request) {
         LoginResponse loginResponse = authService.login(request);
+//        System.out.println("loginResponse = " + loginResponse.getUserInfo());
         return ResponseEntity.ok(loginResponse);
     }
 }

@@ -24,10 +24,13 @@ public class User {
 
     private String email;
 
+    private String profileImageUrl;
+
     @Builder
-    public User(Long kakaoId, String nickname, String email) {
+    public User(Long kakaoId, String nickname, String email, String profileImageUrl) {
         this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.email = email;
+        this.profileImageUrl = profileImageUrl;
     }
 }
