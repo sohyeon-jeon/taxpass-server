@@ -10,8 +10,7 @@ import java.util.List;
 public interface OxQuestionRepository extends JpaRepository<OxQuestion, Long> {
 
     @Query(value = """
-    SELECT id,
-        subject_id,
+    SELECT subject_id,
         number,
         question_text,
         answer,

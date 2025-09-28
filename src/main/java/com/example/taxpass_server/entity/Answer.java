@@ -14,7 +14,7 @@ public class Answer {
 
     private String correctAnswer;
 
-    @Lob
+    @Column(columnDefinition = "text")
     private String explanation;
 
     @OneToOne

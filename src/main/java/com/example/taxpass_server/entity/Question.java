@@ -17,8 +17,7 @@ public class Question {
     private Long id;
 
     private String number;
-    @Lob
-    @Column(name = "question_text")
+    @Column(name = "question_text", columnDefinition = "text")
     private String questionText;
 
     @CreationTimestamp

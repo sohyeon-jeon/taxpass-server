@@ -19,8 +19,7 @@ public class Choice {
     @Column(name = "choice_type")
     private String choiceType;
 
-    @Lob
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "text")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
