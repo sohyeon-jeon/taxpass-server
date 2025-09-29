@@ -19,8 +19,9 @@ public class OxQuestionController {
     private final OxQuestionService oxQuestionService;
 
     @GetMapping("/{subjectId}")
-    public List<Object[]> getOxQuestionsBySubjectId(@PathVariable Long subjectId) {
-        return oxQuestionService.getOxQuestionsBySubjectId(subjectId);
+    public List<Object[]> getOxQuestionsBySubjectId(@PathVariable Long subjectId, HttpServletRequest request) {
+        Long kakaoId = (Long) request.getAttribute("kakaoId");
+        return oxQuestionService.getOxQuestionsBySubjectId(subjectId, kakaoId);
     }
 
     @PostMapping("/upload")

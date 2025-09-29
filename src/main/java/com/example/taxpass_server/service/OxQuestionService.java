@@ -32,8 +32,8 @@ public class OxQuestionService {
     private final OxQuestionRepository oxQuestionRepository;
     private final JdbcTemplate jdbcTemplate;
 
-    public List<Object[]> getOxQuestionsBySubjectId(Long subjectId) {
-        return oxQuestionRepository.findOxQuestionsBySubjectId(subjectId);
+    public List<Object[]> getOxQuestionsBySubjectId(Long subjectId, Long userId) {
+        return oxQuestionRepository.findOxQuestionsBySubjectId(subjectId, userId);
     }
 
     @Transactional
