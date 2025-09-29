@@ -18,6 +18,7 @@ public interface OxQuestionRepository extends JpaRepository<OxQuestion, Long> {
         tag
     FROM ox_questions
     WHERE subject_id = :subjectId
+    order by subject_id,number::int
 """, nativeQuery = true)
     List<Object[]> findOxQuestionsBySubjectId(@Param("subjectId") Long subjectId);
 }
