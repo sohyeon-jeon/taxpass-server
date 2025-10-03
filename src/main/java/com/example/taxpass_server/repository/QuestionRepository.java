@@ -46,7 +46,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     FROM questions q
     JOIN choices c ON q.id = c.question_id
     JOIN answers a ON q.id = a.question_id
-    WHERE q.problem_group_id = :subjectId
+    JOIN problem_groups p ON  q.problem_group_id= p.id
+    WHERE p.subjects_id = :subjectId
     GROUP BY
       q.id,
       q.problem_group_id,
