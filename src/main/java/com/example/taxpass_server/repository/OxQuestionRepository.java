@@ -10,7 +10,7 @@ import java.util.List;
 public interface OxQuestionRepository extends JpaRepository<OxQuestion, Long> {
 
     @Query(value = """
-ㅈ   SELECT q.subject_id,
+  SELECT q.subject_id,
           q.number,
           q.question_text,
           q.answer,
@@ -23,7 +23,7 @@ public interface OxQuestionRepository extends JpaRepository<OxQuestion, Long> {
          AND r.user_id = :userId
    WHERE q.subject_id = :subjectId
      AND (r.user_id IS NULL OR r.is_correct = false)
-   ORDER BY q.subject_id, q.number::int;
+   ORDER BY q.subject_id, q.number::int
 """, nativeQuery = true)
     List<Object[]> findOxQuestionsBySubjectId(@Param("subjectId") Long subjectId, @Param("userId") Long userId);
 }
