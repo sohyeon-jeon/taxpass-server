@@ -9,25 +9,30 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-
 @Getter
 @Entity
-@Table(name = "ox_question_results")
+@Table(
+        name = "ox_question_results",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uq_user_question",
+                        columnNames = {"user_id", "question_id"}
+                )
+        }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OxQuestionResult {
 
-    @EmbeddedId
-    private OxQuestionResultId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "kakaoId", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "subject_id", referencedColumnName = "subject_id", insertable = false, updatable = false),
-            @JoinColumn(name = "number", referencedColumnName = "number", insertable = false, updatable = false)
-    })
+    @JoinColumn(name = "question_id", nullable = false)
     private OxQuestion oxQuestion;
 
     @Column(name = "user_answer", nullable = false)
@@ -37,17 +42,28 @@ public class OxQuestionResult {
     private boolean isCorrect;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @Builder
-    public OxQuestionResult(OxQuestionResultId id, boolean userAnswer, boolean isCorrect) {
-        this.id = id;
+    public OxQuestionResult(User user, OxQuestion oxQuestion,
+                            boolean userAnswer, boolean isCorrect) {
+        this.user = user;
+        this.oxQuestion = oxQuestion;
         this.userAnswer = userAnswer;
         this.isCorrect = isCorrect;
+    }
+
+    public void updateAnswer(boolean userAnswer, boolean isCorrect) {
+        this.userAnswer = userAnswer;
+        this.isCorrect = isCorrect;
+    }
+
+    public void touch() {
+        this.updatedAt = LocalDateTime.now();
     }
 }

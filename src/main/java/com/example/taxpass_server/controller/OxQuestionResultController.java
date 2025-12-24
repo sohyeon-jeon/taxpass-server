@@ -17,7 +17,10 @@ public class OxQuestionResultController {
     public ResponseEntity<Void> saveOxAnswer(
             @RequestBody SaveOxAnswerRequest request,
             @RequestAttribute("kakaoId") Long kakaoId) {
+
+
         oxQuestionResultService.saveResult(request, kakaoId);
         return ResponseEntity.ok().build();
     }
+
 }

@@ -11,15 +11,37 @@ import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "ox_questions")
+@Table(
+        name = "ox_questions",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uq_ox_questions",
+                        columnNames = {"subject_id", "main_theme", "theme", "number"}
+                )
+        }
+)
 @Getter
 @Setter
 public class OxQuestion {
 
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @EmbeddedId
-    private OxQuestionId id;
+    @Column(name = "subject_id", nullable = false)
+    private Long subjectId;
+
+    @Column(name = "main_theme", nullable = false)
+    private String mainTheme;
+
+    @Column(name = "theme", nullable = false)
+    private String theme;
+
+    @Column(name = "number", nullable = false)
+    private String number;
+
+    @Column(name = "question_title", nullable = false, columnDefinition = "text")
+    private String questionTitle;
 
     @Column(name = "question_text", nullable = false, columnDefinition = "text")
     private String questionText;
@@ -29,7 +51,7 @@ public class OxQuestion {
 
     @Column(name = "explanation", columnDefinition = "text")
     private String explanation;
-//
+
     @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "tag", columnDefinition = "text[]")
     private String[] tag;
@@ -53,31 +75,5 @@ public class OxQuestion {
 
     @Column(name = "updated_by_user_id")
     private String updatedByUserId;
-
-
-//    (subject_id,number) 복합키 설정
-    public void setSubjectId(long subjectId) {
-        if (this.id == null) {
-            this.id = new OxQuestionId();
-        }
-        this.id.setSubjectId(subjectId);
-    }
-
-    public void setNumber(String number) {
-        if (this.id == null) {
-            this.id = new OxQuestionId();
-        }
-        this.id.setNumber(number);
-    }
-
-    public long getSubjectId() {
-        if (id == null || id.getSubjectId() == null) {
-            return 0L;
-        }
-        return id.getSubjectId();
-    }
-
-    public String getNumber() {
-        return id != null ? id.getNumber() : null;
-    }
 }
+

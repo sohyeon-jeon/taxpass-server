@@ -1,7 +1,9 @@
 package com.example.taxpass_server.service;
 
 import com.example.taxpass_server.entity.OxQuestion;
+import com.example.taxpass_server.entity.User;
 import com.example.taxpass_server.repository.OxQuestionRepository;
+import com.example.taxpass_server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -30,11 +32,28 @@ import java.util.List;
 public class OxQuestionService {
 
     private final OxQuestionRepository oxQuestionRepository;
+    private final UserRepository userRepository;
     private final JdbcTemplate jdbcTemplate;
 
-    public List<Object[]> getOxQuestionsBySubjectId(Long subjectId, Long userId) {
-        return oxQuestionRepository.findOxQuestionsBySubjectId(subjectId, userId);
+    public List<Object[]> getOxQuestionsBySubjectId(Long subjectId, Long kakaoId) {
+
+        // kakaoId → User PK 변환
+        User user = userRepository.findByKakaoId(kakaoId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+
+//        System.out.printf(
+//                "[OX] subjectId=%d, kakaoId=%d, userId=%d%n",
+//                subjectId,
+//                kakaoId,
+//                user.getId()
+//        );
+
+        return oxQuestionRepository.findOxQuestionsBySubjectId(
+                subjectId,
+                user.getId()
+        );
     }
+
 
     @Transactional
     public void uploadOxQuestions(MultipartFile file, String userId, String remoteAddr) throws IOException {

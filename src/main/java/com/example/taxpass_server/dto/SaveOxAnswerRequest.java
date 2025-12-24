@@ -3,15 +3,12 @@ package com.example.taxpass_server.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
+@Getter
 public class SaveOxAnswerRequest {
-    @Getter
-    @JsonProperty("subjectId")
-    private int subjectId;
 
-    @Getter
-    private String number;
+    @JsonProperty("questionId")
+    private Long questionId;
 
-    @Getter
     @JsonProperty("userAnswer")
     private boolean userAnswer;
 
