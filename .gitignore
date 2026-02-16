@@ -38,3 +38,9 @@ out/
 
 # Spring Boot 설정 파일
 src/main/resources/application.properties
+
+src/main/resources/python/.env
+src/main/resources/python/.venv/
+*.pdf
+
+/data
