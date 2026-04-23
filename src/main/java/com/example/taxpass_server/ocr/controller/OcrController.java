@@ -3,6 +3,7 @@ package com.example.taxpass_server.ocr.controller;
 import com.example.taxpass_server.ocr.model.OcrJobStatus;
 import com.example.taxpass_server.ocr.model.OcrJobStore;
 import com.example.taxpass_server.ocr.service.OcrWorkerService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +31,7 @@ public class OcrController {
     }
 
     @PostMapping("/upload")
-    public Map<String, String> uploadPdf(@RequestParam("file") MultipartFile file, @RequestParam("startPage") int startPage, @RequestParam("endPage") int endPage) throws Exception {
+    public Map<String, String> uploadPdf(@RequestParam("file") MultipartFile file, @RequestParam("startPage") int startPage, @RequestParam("endPage") int endPage, HttpServletRequest request) throws Exception {
 
         // job 생성
         OcrJobStatus job = jobStore.create();
@@ -38,6 +39,18 @@ public class OcrController {
         // 임시 파일 생성
         Path pdfPath = Files.createTempFile("ocr-", ".pdf");
         file.transferTo(pdfPath);
+
+        Long kakaoId = (Long) request.getAttribute("kakaoId");
+
+        System.out.println("kakaoId: " + kakaoId);
+
+        workerService.validateAndRunPython(
+                kakaoId,
+                job.getJobId(),
+                pdfPath,
+                startPage,
+                endPage
+        );
 
         //  Python worker 실행 (페이지 전달)
         workerService.runPython(job.getJobId(), pdfPath, startPage, endPage);
@@ -48,13 +61,20 @@ public class OcrController {
 
     // Polling 전용 progress API
     @GetMapping("/progress/{jobId}")
-    public OcrJobStatus progress(@PathVariable String jobId) {
+    public OcrJobStatus progress(
+            @PathVariable String jobId
+    ) {
 
-        OcrJobStatus status = jobStore.get(jobId);
+        OcrJobStatus status =
+                jobStore.getAndRemoveIfFinished(jobId);
 
         if (status == null) {
-            // 없는 job 처리
-            return new OcrJobStatus(jobId, 100, "존재하지 않는 작업입니다.", null);
+            return new OcrJobStatus(
+                    jobId,
+                    100,
+                    "존재하지 않는 작업입니다.",
+                    null
+            );
         }
 
         return status;

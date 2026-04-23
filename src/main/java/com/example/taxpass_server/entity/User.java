@@ -26,11 +26,15 @@ public class User {
 
     private String profileImageUrl;
 
+    @Column(nullable = false)
+    private int cnt;
+
     @Builder
     public User(Long kakaoId, String nickname, String email, String profileImageUrl) {
         this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.email = email;
         this.profileImageUrl = profileImageUrl;
+        this.cnt = 0;
     }
 }

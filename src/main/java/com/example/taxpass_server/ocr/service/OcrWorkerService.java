@@ -1,6 +1,8 @@
 package com.example.taxpass_server.ocr.service;
 
+import com.example.taxpass_server.entity.User;
 import com.example.taxpass_server.ocr.model.OcrJobStore;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,11 +11,43 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 
+import com.example.taxpass_server.repository.UserRepository;
+
 @Service
 @RequiredArgsConstructor
 public class OcrWorkerService {
 
     private final OcrJobStore jobStore;
+    private final UserRepository userRepository;
+
+    @Transactional
+    public void validateAndRunPython(
+            Long kakaoId,
+            String jobId,
+            Path pdfPath,
+            int startPage,
+            int endPage
+    ) {
+
+        User user = userRepository.findByKakaoId(kakaoId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+
+        Long userId = user.getId();
+
+        System.out.println("userId: " + userId);
+
+
+
+        int requestPages = endPage - startPage + 1;
+
+        int updated = userRepository.increaseCntIfPossible(userId, requestPages);
+
+        if (updated == 0) {
+            throw new RuntimeException("한 사용자당 PDF는 최대 5페이지까지만 업로드할 수 있어요.");
+        }
+
+
+    }
 
     public void runPython(
             String jobId,

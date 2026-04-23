@@ -42,4 +42,23 @@ public class OcrJobStore {
         }
     }
 
+    public OcrJobStatus getAndRemoveIfFinished(String jobId) {
+
+        OcrJobStatus status = store.get(jobId);
+
+        if (status != null && status.getProgress() >= 100) {
+            store.remove(jobId); // 완료 후 삭제
+
+            System.out.println("removed jobId = " + jobId);
+            System.out.println("current job count = " + store.size());
+        }
+
+        return status;
+    }
+
+
+
+
+
+
 }
